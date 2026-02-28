@@ -10,6 +10,7 @@ export interface Episode {
 }
 
 export interface Season {
+  id: string;
   number: number;
   episodes: Episode[];
 }
@@ -18,7 +19,7 @@ export interface VideoContent {
   id: string;
   title: string;
   type: ContentType;
-  genre: string;
+  category: string; // Renamed from genre
   description: string;
   posterUrl: string;
   bannerUrl?: string;
@@ -33,7 +34,7 @@ export interface SubscriptionPlan {
   id: string;
   name: string;
   type: SubscriptionType;
-  durationValue: number; // e.g., 30
+  durationValue: number; 
   durationUnit: 'hours' | 'days' | 'lifetime';
   price: number;
 }

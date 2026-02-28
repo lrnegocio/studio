@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Film, Plus, Trash2, Edit, Wand2, Loader2, Play, PlusCircle, Layers, MonitorPlay, Save, X, Search, Mic, MicOff } from 'lucide-react';
+import { Film, Plus, Trash2, Edit, Wand2, Loader2, Play, PlusCircle, Layers, MonitorPlay, Save, X, Search, Mic, AlertTriangle } from 'lucide-react';
 import { VideoContent, ContentType, Season, Episode } from '@/lib/types';
 import { generateContentDescription } from '@/ai/flows/admin-content-description-generation';
 import { useToast } from '@/hooks/use-toast';

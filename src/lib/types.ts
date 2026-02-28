@@ -1,0 +1,47 @@
+
+export type ContentType = 'movie' | 'series' | 'channel';
+
+export interface Episode {
+  id: string;
+  title: string;
+  number: number;
+  url: string;
+  duration?: string;
+}
+
+export interface Season {
+  number: number;
+  episodes: Episode[];
+}
+
+export interface VideoContent {
+  id: string;
+  title: string;
+  type: ContentType;
+  genre: string;
+  description: string;
+  posterUrl: string;
+  bannerUrl?: string;
+  sourceUrl?: string; // For movies/channels
+  seasons?: Season[]; // For series
+  isFeatured?: boolean;
+}
+
+export type SubscriptionType = 'trial' | 'paid' | 'lifetime';
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  type: SubscriptionType;
+  durationValue: number; // e.g., 30
+  durationUnit: 'hours' | 'days' | 'lifetime';
+  price: number;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  role: 'admin' | 'user';
+  subscriptionId?: string;
+  subscriptionExpiresAt?: string;
+}

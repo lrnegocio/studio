@@ -1,4 +1,3 @@
-
 "use client";
 import { useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
@@ -14,6 +13,7 @@ import { Film, Plus, Trash2, Edit, Wand2, Loader2, Play, PlusCircle, Layers, Mon
 import { VideoContent, ContentType, Season, Episode } from '@/lib/types';
 import { generateContentDescription } from '@/ai/flows/admin-content-description-generation';
 import { useToast } from '@/hooks/use-toast';
+import { formatVideoUrl } from '@/lib/utils';
 
 export default function AdminContentPage() {
   const { content, saveContent, isLoaded } = useContentStore();
@@ -125,10 +125,8 @@ export default function AdminContentPage() {
     let updatedContentList: VideoContent[];
     
     if (formData.id) {
-      // Edit existing
       updatedContentList = content.map(c => c.id === formData.id ? (formData as VideoContent) : c);
     } else {
-      // Add new
       const newItem = { ...formData, id: Date.now().toString() } as VideoContent;
       updatedContentList = [...content, newItem];
     }
@@ -229,7 +227,12 @@ export default function AdminContentPage() {
                         URL da Transmissão (M3U8 / MP4 / Youtube)
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="secondary" size="sm" className="h-8 text-xs gap-2" onClick={() => setTestUrl(formData.sourceUrl || '')}>
+                            <Button 
+                              variant="secondary" 
+                              size="sm" 
+                              className="h-8 text-xs gap-2" 
+                              onClick={() => setTestUrl(formatVideoUrl(formData.sourceUrl))}
+                            >
                               <MonitorPlay className="w-4 h-4" /> Testar Sinal Agora
                             </Button>
                           </DialogTrigger>
@@ -237,15 +240,25 @@ export default function AdminContentPage() {
                             <DialogHeader><DialogTitle className="text-white">Player de Verificação</DialogTitle></DialogHeader>
                             <div className="aspect-video w-full bg-muted flex items-center justify-center rounded-lg overflow-hidden border border-white/10">
                               {testUrl ? (
-                                <iframe src={testUrl} className="w-full h-full" allowFullScreen allow="autoplay; encrypted-media" />
+                                <iframe 
+                                  src={testUrl} 
+                                  className="w-full h-full" 
+                                  allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
+                                  allowFullScreen 
+                                />
                               ) : (
-                                <p className="text-muted-foreground">Insira uma URL acima para testar o funcionamento.</p>
+                                <p className="text-muted-foreground">Insira uma URL acima para testar.</p>
                               )}
                             </div>
                           </DialogContent>
                         </Dialog>
                       </Label>
-                      <Input value={formData.sourceUrl} onChange={e => setFormData({...formData, sourceUrl: e.target.value})} placeholder="https://..." className="h-12 font-mono text-xs" />
+                      <Input 
+                        value={formData.sourceUrl} 
+                        onChange={e => setFormData({...formData, sourceUrl: e.target.value})} 
+                        placeholder="https://..." 
+                        className="h-12 font-mono text-xs" 
+                      />
                     </div>
                   )}
                 </div>
@@ -301,7 +314,7 @@ export default function AdminContentPage() {
                                 <Input placeholder="Nome do Ep" value={ep.title} onChange={(e) => updateEpisode(season.id, ep.id, 'title', e.target.value)} className="h-9 text-xs bg-transparent" />
                               </div>
                               <div className="col-span-7">
-                                <Input placeholder="Link do vídeo (.mp4, .m3u8, youtube...)" value={ep.url} onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)} className="h-9 text-xs bg-transparent font-mono" />
+                                <Input placeholder="Link do vídeo" value={ep.url} onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)} className="h-9 text-xs bg-transparent font-mono" />
                               </div>
                               <div className="col-span-1 flex justify-end">
                                 <Button variant="ghost" size="icon" className="h-9 w-9 text-destructive hover:bg-destructive/10" onClick={() => deleteEpisode(season.id, ep.id)}>
@@ -330,29 +343,18 @@ export default function AdminContentPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {content.length === 0 && !isEditing && (
-            <div className="col-span-full py-20 text-center border-2 border-dashed border-border rounded-3xl">
-              <Film className="w-16 h-16 text-muted-foreground mx-auto opacity-20 mb-4" />
-              <p className="text-muted-foreground text-lg">Seu catálogo está vazio. Comece adicionando um canal ou filme!</p>
-            </div>
-          )}
           {content.map(item => (
             <Card key={item.id} className="bg-card border-border overflow-hidden hover:border-primary/50 transition-all group">
               <CardContent className="p-0 flex h-32">
                 <div className="relative w-24 h-full flex-shrink-0 border-r border-border">
                   <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Play className="w-6 h-6 text-primary fill-primary" />
-                  </div>
                 </div>
                 <div className="flex-1 p-4 min-w-0 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-md truncate flex-1">{item.title}</h3>
-                    </div>
+                    <h3 className="font-bold text-md truncate mb-1">{item.title}</h3>
                     <div className="flex items-center gap-2">
                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-black uppercase">{item.type}</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-bold truncate">Cat: {item.category}</span>
+                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-bold">Cat: {item.category}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-end gap-2">

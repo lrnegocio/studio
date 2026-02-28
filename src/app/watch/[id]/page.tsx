@@ -1,12 +1,12 @@
-
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { useContentStore } from '@/hooks/use-content';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronRight, Play, FastForward, Rewind, Maximize, Smartphone, Monitor, Tv } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Play, FastForward, Rewind, Maximize, Smartphone, Monitor, Tv, Loader2 } from 'lucide-react';
 import { VideoContent, Episode } from '@/lib/types';
+import { formatVideoUrl } from '@/lib/utils';
 
 export default function WatchPage() {
   const { id } = useParams();
@@ -15,6 +15,7 @@ export default function WatchPage() {
   const [video, setVideo] = useState<VideoContent | null>(null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
   const [selectedSeason, setSelectedSeason] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -25,17 +26,25 @@ export default function WatchPage() {
       } else {
         setVideo(found);
         if (found.type !== 'series') {
-          setActiveUrl(found.sourceUrl || null);
+          setActiveUrl(formatVideoUrl(found.sourceUrl));
         } else if (found.seasons && found.seasons.length > 0) {
           const firstSeason = found.seasons[0];
           setSelectedSeason(firstSeason.number);
           if (firstSeason.episodes.length > 0) {
-            setActiveUrl(firstSeason.episodes[0].url);
+            setActiveUrl(formatVideoUrl(firstSeason.episodes[0].url));
           }
         }
+        setIsLoading(false);
       }
     }
   }, [id, content, isLoaded, router]);
+
+  const handleEpisodeSelect = (url: string) => {
+    setIsLoading(true);
+    setActiveUrl(formatVideoUrl(url));
+    // Simula tempo de carregamento para efeito visual de performance
+    setTimeout(() => setIsLoading(false), 800);
+  };
 
   if (!isLoaded || !video) return null;
 
@@ -56,27 +65,39 @@ export default function WatchPage() {
         {/* Optimized Player Container */}
         <div className="relative w-full flex-1 flex flex-col items-center justify-center bg-black overflow-hidden group">
           {activeUrl ? (
-            <div className="w-full h-full flex flex-col">
+            <div className="w-full h-full flex flex-col relative">
+              {isLoading && (
+                <div className="absolute inset-0 z-10 bg-black/80 flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                  <p className="text-primary font-bold animate-pulse">Sintonizando sinal ultra-rápido...</p>
+                </div>
+              )}
+              
               <div className="relative flex-1 w-full bg-black">
                 <iframe 
                   ref={iframeRef}
                   src={activeUrl}
                   className="w-full h-full border-none shadow-2xl"
+                  allow="autoplay; encrypted-media; fullscreen; picture-in-picture; accelerometer; gyroscope"
                   allowFullScreen
-                  allow="autoplay; encrypted-media; picture-in-picture"
                   loading="eager"
                   title={video.title}
                 />
               </div>
               
               {/* Custom Navigation Controls */}
-              <div className="bg-gradient-to-t from-black via-black/80 to-transparent p-6 flex flex-col items-center gap-4 border-t border-white/5">
+              <div className="bg-gradient-to-t from-black via-black/90 to-transparent p-6 flex flex-col items-center gap-4 border-t border-white/5">
                 <div className="flex items-center justify-center gap-8">
                   <Button 
                     variant="ghost" 
                     size="icon" 
                     className="w-14 h-14 rounded-full bg-white/5 hover:bg-white/20 text-primary transition-all active:scale-95"
-                    title="Retroceder"
+                    onClick={() => {
+                      if (iframeRef.current) {
+                        // Tenta retroceder 10s se for um player compatível
+                        iframeRef.current.contentWindow?.postMessage('{"event":"command","func":"seekTo","args":[0,true]}', '*');
+                      }
+                    }}
                   >
                     <Rewind className="w-8 h-8 fill-current" />
                   </Button>
@@ -90,23 +111,22 @@ export default function WatchPage() {
                     variant="ghost" 
                     size="icon" 
                     className="w-14 h-14 rounded-full bg-white/5 hover:bg-white/20 text-primary transition-all active:scale-95"
-                    title="Avançar"
                   >
                     <FastForward className="w-8 h-8 fill-current" />
                   </Button>
                 </div>
 
-                <div className="flex items-center gap-6 text-xs text-muted-foreground font-medium">
-                   <div className="flex items-center gap-1"><Smartphone className="w-3 h-3" /> Mobile OK</div>
-                   <div className="flex items-center gap-1"><Monitor className="w-3 h-3" /> PC OK</div>
-                   <div className="flex items-center gap-1"><Tv className="w-3 h-3" /> TV Optimized</div>
+                <div className="flex items-center gap-6 text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                   <div className="flex items-center gap-1"><Smartphone className="w-3 h-3" /> Mobile</div>
+                   <div className="flex items-center gap-1"><Monitor className="w-3 h-3" /> PC</div>
+                   <div className="flex items-center gap-1"><Tv className="w-3 h-3" /> Smart TV</div>
                 </div>
               </div>
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center gap-4">
-              <div className="w-20 h-20 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-              <p className="text-muted-foreground animate-pulse font-bold">Iniciando Transmissão Ultra-Rápida...</p>
+              <Loader2 className="w-20 h-20 text-primary/20 animate-spin" />
+              <p className="text-muted-foreground animate-pulse font-bold">Aguardando sinal...</p>
             </div>
           )}
         </div>
@@ -121,11 +141,7 @@ export default function WatchPage() {
                 <span className="bg-white/5 px-2 py-0.5 rounded text-white">{video.category}</span>
               </div>
               <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter">{video.title}</h1>
-              <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-3xl">{video.description}</p>
-            </div>
-            
-            <div className="flex-shrink-0 w-full md:w-48 aspect-[2/3] relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-               <img src={video.posterUrl} alt={video.title} className="w-full h-full object-cover" />
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">{video.description}</p>
             </div>
           </div>
 
@@ -144,21 +160,24 @@ export default function WatchPage() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {video.seasons.find(s => s.number === selectedSeason)?.episodes.map(ep => (
-                  <button 
-                    key={ep.id} 
-                    onClick={() => setActiveUrl(ep.url)} 
-                    className={`flex items-center gap-4 p-5 rounded-2xl border transition-all text-left group ${activeUrl === ep.url ? 'bg-primary/20 border-primary ring-1 ring-primary/50' : 'bg-card border-white/5 hover:border-primary/40'}`}
-                  >
-                    <div className={`w-12 h-12 flex items-center justify-center rounded-xl transition-colors ${activeUrl === ep.url ? 'bg-primary text-black' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black'}`}>
-                      <Play className="w-6 h-6 fill-current" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-black text-sm truncate uppercase tracking-tight">Episódio {ep.number}</p>
-                      <p className={`text-xs truncate ${activeUrl === ep.url ? 'text-white' : 'text-muted-foreground'}`}>{ep.title}</p>
-                    </div>
-                  </button>
-                ))}
+                {video.seasons.find(s => s.number === selectedSeason)?.episodes.map(ep => {
+                  const isCurrent = activeUrl === formatVideoUrl(ep.url);
+                  return (
+                    <button 
+                      key={ep.id} 
+                      onClick={() => handleEpisodeSelect(ep.url)} 
+                      className={`flex items-center gap-4 p-5 rounded-2xl border transition-all text-left group ${isCurrent ? 'bg-primary/20 border-primary ring-1 ring-primary/50' : 'bg-card border-white/5 hover:border-primary/40'}`}
+                    >
+                      <div className={`w-12 h-12 flex items-center justify-center rounded-xl transition-colors ${isCurrent ? 'bg-primary text-black' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black'}`}>
+                        <Play className="w-6 h-6 fill-current" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-black text-sm truncate uppercase tracking-tight">Episódio {ep.number}</p>
+                        <p className={`text-xs truncate ${isCurrent ? 'text-white' : 'text-muted-foreground'}`}>{ep.title}</p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

@@ -38,6 +38,15 @@ export interface SubscriptionPlan {
   price: number;
 }
 
+export interface AccessKey {
+  id: string;
+  key: string;
+  planId: string;
+  status: 'active' | 'used' | 'expired';
+  createdAt: string;
+  usedAt?: string;
+}
+
 export interface User {
   id: string;
   email: string;

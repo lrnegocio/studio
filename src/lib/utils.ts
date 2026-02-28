@@ -28,8 +28,13 @@ export function formatVideoUrl(url: string | undefined): string {
     return `https://www.dailymotion.com/embed/video/${dailyMatch[1]}?autoplay=1`;
   }
 
-  // VisionCine e similares (se já for um player embedado ou link direto)
-  if (trimmedUrl.includes('visioncine.stream') || trimmedUrl.includes('playcnvs.stream')) {
+  // VisionCine, DigitalPlus e similares
+  if (
+    trimmedUrl.includes('visioncine.stream') || 
+    trimmedUrl.includes('playcnvs.stream') || 
+    trimmedUrl.includes('digitalplus.top') ||
+    trimmedUrl.includes('web.digitalplus.top')
+  ) {
     return trimmedUrl;
   }
   

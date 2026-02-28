@@ -75,6 +75,7 @@ export default function WatchPage() {
 
   const handleSeek = (direction: 'forward' | 'backward') => {
     toast({ title: direction === 'forward' ? "Avançar +30s" : "Retroceder -30s", duration: 1000 });
+    // Nota: Em iframes externos, o controle de tempo real depende do suporte do player do iframe via postMessage.
   };
 
   const reloadSignal = () => {
@@ -98,14 +99,14 @@ export default function WatchPage() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col text-white overflow-x-hidden">
-      {/* Botão Voltar - Posição Ajustada */}
-      <div className="absolute top-4 left-4 z-[60] group">
+      {/* Botão Voltar - Posição Flutuante para não atrapalhar controles */}
+      <div className="absolute top-6 left-6 z-[60] group">
         <Button 
           variant="secondary" 
-          className="gap-2 backdrop-blur-2xl bg-black/60 hover:bg-primary hover:text-black border border-white/10 rounded-full shadow-2xl transition-all h-12 px-6" 
+          className="gap-2 backdrop-blur-2xl bg-black/60 hover:bg-primary hover:text-black border border-white/10 rounded-full shadow-2xl transition-all h-14 px-8" 
           onClick={() => router.back()}
         >
-          <ArrowLeft className="w-5 h-5" /> <span className="font-bold text-xs uppercase tracking-widest">Voltar</span>
+          <ArrowLeft className="w-6 h-6" /> <span className="font-black text-xs uppercase tracking-[0.3em]">Voltar</span>
         </Button>
       </div>
 
@@ -137,7 +138,7 @@ export default function WatchPage() {
                   <div className="space-y-6">
                     <h3 className="text-3xl font-black uppercase tracking-tighter">Sinal Protegido Externamente</h3>
                     <p className="text-muted-foreground text-lg max-w-xl leading-relaxed font-medium">
-                      Este canal utiliza criptografia oficial que impede a incorporação. Assista no Player Mestre para garantir 100% de qualidade sem travamentos.
+                      Este canal utiliza criptografia oficial que impede a incorporação interna. Use o botão abaixo para abrir o Player Mestre Externo.
                     </p>
                   </div>
                   <Button size="lg" onClick={openExternal} className="bg-primary hover:bg-primary/90 gap-4 h-16 px-12 text-xl font-black shadow-[0_0_40px_rgba(217,128,38,0.5)] rounded-full">
@@ -156,45 +157,45 @@ export default function WatchPage() {
                 />
               </div>
               
-              {/* Controles do Player Customizados */}
-              <div className="bg-gradient-to-t from-black via-black/95 to-transparent p-8 flex flex-col items-center gap-8 border-t border-white/5 opacity-0 group-hover/player:opacity-100 transition-opacity duration-300">
-                <div className="flex items-center justify-center gap-12 md:gap-24">
+              {/* Controles do Player - Ocultos por padrão, aparecem no Hover */}
+              <div className="bg-gradient-to-t from-black via-black/95 to-transparent p-10 flex flex-col items-center gap-10 border-t border-white/5 opacity-0 group-hover/player:opacity-100 transition-opacity duration-300">
+                <div className="flex items-center justify-center gap-16 md:gap-32">
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="w-20 h-20 rounded-full bg-white/5 hover:bg-primary hover:text-black transition-all active:scale-90"
+                    className="w-24 h-24 rounded-full bg-white/5 hover:bg-primary hover:text-black transition-all active:scale-90"
                     onClick={() => handleSeek('backward')}
                   >
-                    <Rewind className="w-12 h-12 fill-current" />
+                    <Rewind className="w-14 h-14 fill-current" />
                   </Button>
                   
-                  <div className="flex flex-col items-center gap-6">
-                    <div className="flex gap-6">
+                  <div className="flex flex-col items-center gap-8">
+                    <div className="flex gap-8">
                       <Button 
                         variant="outline" 
                         size="icon" 
-                        className="w-14 h-14 rounded-full border-primary/40 text-primary hover:bg-primary hover:text-black transition-all"
+                        className="w-16 h-16 rounded-full border-primary/40 text-primary hover:bg-primary hover:text-black transition-all"
                         onClick={reloadSignal}
                         title="Otimizar Sinal"
                       >
-                        <RotateCcw className="w-7 h-7" />
+                        <RotateCcw className="w-8 h-8" />
                       </Button>
                       <Button 
                         variant="secondary" 
                         size="icon" 
-                        className="w-14 h-14 rounded-full bg-primary text-black hover:bg-primary/80 transition-all shadow-[0_0_20px_rgba(217,128,38,0.3)]"
+                        className="w-16 h-16 rounded-full bg-primary text-black hover:bg-primary/80 transition-all shadow-[0_0_30px_rgba(217,128,38,0.4)]"
                         onClick={toggleFullscreen}
                         title="Maximizar Tela"
                       >
-                        {isFullscreen ? <Minimize className="w-7 h-7" /> : <Maximize className="w-7 h-7" />}
+                        {isFullscreen ? <Minimize className="w-8 h-8" /> : <Maximize className="w-8 h-8" />}
                       </Button>
                     </div>
                     <div className="flex flex-col items-center">
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">STATUS: P2P ATIVO</span>
-                      <div className="flex gap-1.5 mt-2">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
-                        <div className="w-2 h-2 rounded-full bg-primary animate-ping delay-150" />
-                        <div className="w-2 h-2 rounded-full bg-primary animate-ping delay-300" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">SINAL P2P MESTRE ATIVO</span>
+                      <div className="flex gap-2 mt-3">
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary animate-ping" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary animate-ping delay-150" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary animate-ping delay-300" />
                       </div>
                     </div>
                   </div>
@@ -202,48 +203,48 @@ export default function WatchPage() {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="w-20 h-20 rounded-full bg-white/5 hover:bg-primary hover:text-black transition-all active:scale-90"
+                    className="w-24 h-24 rounded-full bg-white/5 hover:bg-primary hover:text-black transition-all active:scale-90"
                     onClick={() => handleSeek('forward')}
                   >
-                    <FastForward className="w-12 h-12 fill-current" />
+                    <FastForward className="w-14 h-14 fill-current" />
                   </Button>
                 </div>
 
-                <div className="flex items-center gap-10 text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] opacity-40">
-                   <div className="flex items-center gap-2"><Smartphone className="w-4 h-4" /> MOBILE</div>
-                   <div className="flex items-center gap-2"><Monitor className="w-4 h-4" /> DESKTOP</div>
-                   <div className="flex items-center gap-2"><Tv className="w-4 h-4" /> SMART TV</div>
+                <div className="flex items-center gap-12 text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] opacity-40">
+                   <div className="flex items-center gap-3"><Smartphone className="w-5 h-5" /> MOBILE</div>
+                   <div className="flex items-center gap-3"><Monitor className="w-5 h-5" /> DESKTOP</div>
+                   <div className="flex items-center gap-3"><Tv className="w-5 h-5" /> SMART TV</div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center gap-8">
+            <div className="flex-1 flex flex-col items-center justify-center gap-10">
               <Loader2 className="w-24 h-24 text-primary/20 animate-spin" />
-              <p className="text-muted-foreground animate-pulse font-black tracking-[0.6em] text-sm uppercase">BUSCANDO ROTA P2P MESTRE...</p>
+              <p className="text-muted-foreground animate-pulse font-black tracking-[0.7em] text-sm uppercase">SINTONIZANDO ROTA P2P MESTRE...</p>
             </div>
           )}
         </div>
 
-        <div className="bg-background p-8 md:p-16 space-y-12 max-w-7xl mx-auto w-full">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-12 border-b border-white/5 pb-12">
-            <div className="space-y-8 flex-1">
-              <div className="flex items-center gap-4 text-primary font-black text-[10px] uppercase tracking-[0.4em]">
-                <span className="bg-primary/10 px-6 py-2 rounded-full border border-primary/30">{video.type}</span>
-                <ChevronRight className="w-5 h-5 text-white/10" />
-                <span className="bg-white/5 px-6 py-2 rounded-full text-white border border-white/10">{video.category}</span>
+        <div className="bg-background p-10 md:p-20 space-y-16 max-w-7xl mx-auto w-full">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-16 border-b border-white/5 pb-16">
+            <div className="space-y-10 flex-1">
+              <div className="flex items-center gap-5 text-primary font-black text-[10px] uppercase tracking-[0.5em]">
+                <span className="bg-primary/10 px-8 py-3 rounded-full border border-primary/30">{video.type}</span>
+                <ChevronRight className="w-6 h-6 text-white/10" />
+                <span className="bg-white/5 px-8 py-3 rounded-full text-white border border-white/10">{video.category}</span>
               </div>
-              <h1 className="text-5xl md:text-8xl font-black font-headline tracking-tighter uppercase leading-[0.9]">{video.title}</h1>
-              <p className="text-muted-foreground text-xl leading-relaxed max-w-4xl font-medium opacity-80">{video.description}</p>
+              <h1 className="text-6xl md:text-9xl font-black font-headline tracking-tighter uppercase leading-[0.85]">{video.title}</h1>
+              <p className="text-muted-foreground text-2xl leading-relaxed max-w-4xl font-medium opacity-80">{video.description}</p>
             </div>
           </div>
 
           {video.type === 'series' && video.seasons && video.seasons.length > 0 && (
-            <div className="space-y-12">
-              <div className="flex items-center gap-4 overflow-x-auto no-scrollbar pb-6 scroll-smooth">
+            <div className="space-y-16">
+              <div className="flex items-center gap-5 overflow-x-auto no-scrollbar pb-8 scroll-smooth">
                 {video.seasons.map(s => (
                   <button 
                     key={s.id} 
-                    className={`text-xs font-black px-10 py-4 rounded-full transition-all shrink-0 uppercase tracking-widest border-2 ${selectedSeason === s.number ? 'bg-primary text-black border-primary shadow-[0_0_25px_rgba(217,128,38,0.4)]' : 'bg-card text-muted-foreground border-white/5 hover:border-primary/50'}`} 
+                    className={`text-sm font-black px-12 py-5 rounded-full transition-all shrink-0 uppercase tracking-[0.2em] border-2 ${selectedSeason === s.number ? 'bg-primary text-black border-primary shadow-[0_0_30px_rgba(217,128,38,0.5)]' : 'bg-card text-muted-foreground border-white/5 hover:border-primary/50'}`} 
                     onClick={() => setSelectedSeason(s.number)}
                   >
                     TEMPORADA {s.number}
@@ -251,23 +252,23 @@ export default function WatchPage() {
                 ))}
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {video.seasons.find(s => s.number === selectedSeason)?.episodes.map(ep => {
                   const isCurrent = originalUrl === ep.url;
                   return (
                     <button 
                       key={ep.id} 
                       onClick={() => handleEpisodeSelect(ep.url)} 
-                      className={`flex items-center gap-6 p-6 rounded-3xl border-2 transition-all text-left group relative overflow-hidden ${isCurrent ? 'bg-primary/10 border-primary ring-4 ring-primary/10' : 'bg-card border-white/5 hover:border-primary/40 hover:scale-[1.03] shadow-lg'}`}
+                      className={`flex items-center gap-8 p-8 rounded-[2.5rem] border-2 transition-all text-left group relative overflow-hidden ${isCurrent ? 'bg-primary/10 border-primary ring-8 ring-primary/5' : 'bg-card border-white/5 hover:border-primary/40 hover:scale-[1.05] shadow-2xl'}`}
                     >
-                      <div className={`w-14 h-14 flex items-center justify-center rounded-2xl transition-all shadow-xl ${isCurrent ? 'bg-primary text-black' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black'}`}>
-                        <Play className="w-7 h-7 fill-current" />
+                      <div className={`w-16 h-16 flex items-center justify-center rounded-3xl transition-all shadow-2xl ${isCurrent ? 'bg-primary text-black' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black'}`}>
+                        <Play className="w-8 h-8 fill-current" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-[10px] uppercase tracking-[0.3em] text-primary mb-1.5">EPISÓDIO {ep.number}</p>
-                        <p className={`text-sm font-black truncate ${isCurrent ? 'text-white' : 'text-muted-foreground'}`}>{ep.title}</p>
+                        <p className="font-black text-[11px] uppercase tracking-[0.4em] text-primary mb-2">EPISÓDIO {ep.number}</p>
+                        <p className={`text-base font-black truncate ${isCurrent ? 'text-white' : 'text-muted-foreground'}`}>{ep.title}</p>
                       </div>
-                      {isCurrent && <div className="absolute top-0 right-0 w-1.5 h-full bg-primary" />}
+                      {isCurrent && <div className="absolute top-0 right-0 w-2 h-full bg-primary" />}
                     </button>
                   );
                 })}

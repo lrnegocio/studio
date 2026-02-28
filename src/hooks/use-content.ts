@@ -1,19 +1,19 @@
 
 "use client";
 import { useState, useEffect } from 'react';
-import { VideoContent, SubscriptionPlan, AccessKey } from '@/lib/types';
+import { VideoContent, SubscriptionPlan, UserAccount } from '@/lib/types';
 import { INITIAL_CONTENT, INITIAL_PLANS } from '@/lib/mock-data';
 
 export function useContentStore() {
   const [content, setContent] = useState<VideoContent[]>([]);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
-  const [keys, setKeys] = useState<AccessKey[]>([]);
+  const [userAccounts, setUserAccounts] = useState<UserAccount[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const savedContent = localStorage.getItem('leo_tv_content');
     const savedPlans = localStorage.getItem('leo_tv_plans');
-    const savedKeys = localStorage.getItem('leo_tv_keys');
+    const savedUsers = localStorage.getItem('leo_tv_accounts');
     
     if (savedContent) setContent(JSON.parse(savedContent));
     else setContent(INITIAL_CONTENT);
@@ -21,8 +21,8 @@ export function useContentStore() {
     if (savedPlans) setPlans(JSON.parse(savedPlans));
     else setPlans(INITIAL_PLANS);
 
-    if (savedKeys) setKeys(JSON.parse(savedKeys));
-    else setKeys([]);
+    if (savedUsers) setUserAccounts(JSON.parse(savedUsers));
+    else setUserAccounts([]);
 
     setIsLoaded(true);
   }, []);
@@ -37,18 +37,18 @@ export function useContentStore() {
     localStorage.setItem('leo_tv_plans', JSON.stringify(newPlans));
   };
 
-  const saveKeys = (newKeys: AccessKey[]) => {
-    setKeys(newKeys);
-    localStorage.setItem('leo_tv_keys', JSON.stringify(newKeys));
+  const saveUserAccounts = (newUsers: UserAccount[]) => {
+    setUserAccounts(newUsers);
+    localStorage.setItem('leo_tv_accounts', JSON.stringify(newUsers));
   };
 
   return { 
     content, 
     plans, 
-    keys, 
+    userAccounts, 
     saveContent, 
     savePlans, 
-    saveKeys, 
+    saveUserAccounts, 
     isLoaded 
   };
 }

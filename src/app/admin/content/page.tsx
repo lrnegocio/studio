@@ -152,9 +152,7 @@ export default function AdminContentPage() {
 
         {isAdding && (
           <Card className="bg-card border-primary/30 animate-fade-in mb-12">
-            <CardHeader>
-              <CardTitle>Configurar Novo Item</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Configurar Novo Item</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
@@ -166,9 +164,7 @@ export default function AdminContentPage() {
                     <div className="space-y-2">
                       <Label>Tipo</Label>
                       <Select onValueChange={(v: ContentType) => setNewContent({...newContent, type: v})} defaultValue="movie">
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="movie">Filme</SelectItem>
                           <SelectItem value="series">Série</SelectItem>
@@ -185,23 +181,12 @@ export default function AdminContentPage() {
                   <div className="space-y-2">
                     <Label className="flex items-center justify-between">
                       Descrição
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-primary hover:text-primary/80 h-auto p-0 gap-1"
-                        onClick={handleGenerateDescription}
-                        disabled={isGenerating}
-                      >
+                      <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 h-auto p-0 gap-1" onClick={handleGenerateDescription} disabled={isGenerating}>
                         {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
                         Gerar com IA
                       </Button>
                     </Label>
-                    <Textarea 
-                      className="h-24" 
-                      value={newContent.description} 
-                      onChange={e => setNewContent({...newContent, description: e.target.value})} 
-                      placeholder="Breve resumo..."
-                    />
+                    <Textarea className="h-24" value={newContent.description} onChange={e => setNewContent({...newContent, description: e.target.value})} placeholder="Breve resumo..." />
                   </div>
 
                   {newContent.type !== 'series' && (
@@ -211,23 +196,16 @@ export default function AdminContentPage() {
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button variant="outline" size="sm" className="h-7 text-xs gap-2" onClick={() => setTestUrl(newContent.sourceUrl || '')}>
-                              <MonitorPlay className="w-3 h-3" /> Testar Transmissão
+                              <MonitorPlay className="w-3 h-3" /> Testar Sinal
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-4xl bg-black border-primary/50">
-                            <DialogHeader>
-                              <DialogTitle className="text-white">Player de Teste</DialogTitle>
-                            </DialogHeader>
+                            <DialogHeader><DialogTitle className="text-white">Player de Teste</DialogTitle></DialogHeader>
                             <div className="aspect-video w-full bg-muted flex items-center justify-center rounded-lg overflow-hidden">
                               {testUrl ? (
-                                <iframe 
-                                  src={testUrl} 
-                                  className="w-full h-full" 
-                                  allowFullScreen 
-                                  allow="autoplay; encrypted-media"
-                                />
+                                <iframe src={testUrl} className="w-full h-full" allowFullScreen allow="autoplay; encrypted-media" />
                               ) : (
-                                <p className="text-muted-foreground">Insira uma URL válida para testar o sinal.</p>
+                                <p className="text-muted-foreground">Insira uma URL para testar.</p>
                               )}
                             </div>
                           </DialogContent>
@@ -243,11 +221,7 @@ export default function AdminContentPage() {
                     <Label>URL do Poster (Capa)</Label>
                     <Input value={newContent.posterUrl} onChange={e => setNewContent({...newContent, posterUrl: e.target.value})} />
                     <div className="mt-2 w-32 h-48 border border-border rounded-md overflow-hidden bg-muted flex items-center justify-center">
-                      {newContent.posterUrl ? (
-                         <img src={newContent.posterUrl} className="w-full h-full object-cover" alt="Preview" />
-                      ) : (
-                         <Film className="w-8 h-8 text-muted-foreground" />
-                      )}
+                      {newContent.posterUrl ? <img src={newContent.posterUrl} className="w-full h-full object-cover" alt="Preview" /> : <Film className="w-8 h-8 text-muted-foreground" />}
                     </div>
                   </div>
                 </div>
@@ -261,7 +235,6 @@ export default function AdminContentPage() {
                       <PlusCircle className="w-4 h-4" /> Adicionar Temporada
                     </Button>
                   </div>
-
                   <div className="space-y-4">
                     {newContent.seasons?.map((season) => (
                       <Card key={season.id} className="bg-background/50 border-border">
@@ -280,90 +253,46 @@ export default function AdminContentPage() {
                           {season.episodes.map((ep) => (
                             <div key={ep.id} className="grid grid-cols-12 gap-2 items-center bg-card/30 p-2 rounded-lg border border-border">
                               <div className="col-span-1 text-xs text-center font-bold text-primary">#{ep.number}</div>
-                              <div className="col-span-3">
-                                <Input 
-                                  placeholder="Título" 
-                                  value={ep.title} 
-                                  onChange={(e) => updateEpisode(season.id, ep.id, 'title', e.target.value)}
-                                  className="h-8 text-xs"
-                                />
-                              </div>
-                              <div className="col-span-7">
-                                <Input 
-                                  placeholder="URL do vídeo (M3U8 / MP4)" 
-                                  value={ep.url} 
-                                  onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)}
-                                  className="h-8 text-xs"
-                                />
-                              </div>
-                              <div className="col-span-1 flex justify-end">
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                                  onClick={() => deleteEpisode(season.id, ep.id)}
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
+                              <div className="col-span-3"><Input placeholder="Título" value={ep.title} onChange={(e) => updateEpisode(season.id, ep.id, 'title', e.target.value)} className="h-8 text-xs" /></div>
+                              <div className="col-span-7"><Input placeholder="URL do vídeo" value={ep.url} onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)} className="h-8 text-xs" /></div>
+                              <div className="col-span-1 flex justify-end"><Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteEpisode(season.id, ep.id)}><Trash2 className="w-3 h-3" /></Button></div>
                             </div>
                           ))}
-                          {season.episodes.length === 0 && (
-                            <p className="text-xs text-muted-foreground text-center py-2 italic">Nenhum episódio nesta temporada. Clique em "Add Episódio".</p>
-                          )}
                         </CardContent>
                       </Card>
                     ))}
-                    {newContent.seasons?.length === 0 && (
-                      <div className="text-center py-8 border border-dashed border-border rounded-lg">
-                        <p className="text-muted-foreground text-sm">Nenhuma temporada criada ainda.</p>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
-
               <div className="flex justify-end gap-3 pt-6 border-t border-border">
                 <Button variant="ghost" onClick={() => setIsAdding(false)}>Cancelar</Button>
-                <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 px-8">Salvar no Catálogo</Button>
+                <Button onClick={handleSave}>Salvar no Catálogo</Button>
               </div>
             </CardContent>
           </Card>
         )}
 
         <div className="grid grid-cols-1 gap-4">
-          {content.length === 0 ? (
-            <div className="py-20 text-center space-y-4 bg-card/20 rounded-xl border border-dashed border-border">
-              <Clapperboard className="w-12 h-12 text-muted-foreground mx-auto" />
-              <p className="text-muted-foreground">Seu catálogo está vazio. Comece adicionando canais, filmes ou séries!</p>
-            </div>
-          ) : (
-            content.map(item => (
-              <Card key={item.id} className="bg-card border-border hover:border-primary/20 transition-all">
-                <CardContent className="p-4 flex items-center gap-6">
-                  <div className="relative w-16 h-24 rounded-md overflow-hidden flex-shrink-0 border border-border">
-                    <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover" />
+          {content.map(item => (
+            <Card key={item.id} className="bg-card border-border">
+              <CardContent className="p-4 flex items-center gap-6">
+                <div className="relative w-16 h-24 rounded-md overflow-hidden flex-shrink-0 border border-border">
+                  <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-lg truncate">{item.title}</h3>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold uppercase">{item.type}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-lg truncate">{item.title}</h3>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold uppercase tracking-wider">{item.type}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground line-clamp-1">{item.description || 'Sem descrição'}</p>
-                    <p className="text-xs text-primary font-medium mt-1">Categoria: {item.category}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
-                      <Edit className="w-5 h-5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleDelete(item.id)}>
-                      <Trash2 className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+                  <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
+                  <p className="text-xs text-primary font-medium mt-1">Categoria: {item.category}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}><Trash2 className="w-5 h-5" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </main>
     </div>

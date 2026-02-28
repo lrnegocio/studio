@@ -19,16 +19,16 @@ export interface VideoContent {
   id: string;
   title: string;
   type: ContentType;
-  category: string; // Renamed from genre
+  category: string;
   description: string;
   posterUrl: string;
   bannerUrl?: string;
-  sourceUrl?: string; // For movies/channels
-  seasons?: Season[]; // For series
+  sourceUrl?: string;
+  seasons?: Season[];
   isFeatured?: boolean;
 }
 
-export type SubscriptionType = 'trial' | 'paid' | 'lifetime';
+export type SubscriptionType = 'trial' | 'paid' | 'personalized' | 'lifetime';
 
 export interface SubscriptionPlan {
   id: string;
@@ -36,22 +36,19 @@ export interface SubscriptionPlan {
   type: SubscriptionType;
   durationValue: number; 
   durationUnit: 'hours' | 'days' | 'lifetime';
-  price: number;
 }
 
-export interface AccessKey {
+export interface UserAccount {
   id: string;
-  key: string;
+  username: string;
+  password?: string;
   planId: string;
-  status: 'active' | 'used' | 'expired';
   createdAt: string;
-  usedAt?: string;
+  status: 'active' | 'expired' | 'blocked';
 }
 
 export interface User {
   id: string;
   email: string;
   role: 'admin' | 'user';
-  subscriptionId?: string;
-  subscriptionExpiresAt?: string;
 }

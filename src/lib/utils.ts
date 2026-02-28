@@ -19,7 +19,7 @@ export function formatVideoUrl(url: string | undefined): string {
   const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const ytMatch = trimmedUrl.match(youtubeRegex);
   if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&controls=1`;
   }
 
   // Dailymotion
@@ -30,12 +30,13 @@ export function formatVideoUrl(url: string | undefined): string {
   }
   
   // Para outros links, retornamos a URL original
-  // Se for HTTP em um site HTTPS, o navegador pode bloquear.
+  // Se for um link HTTP sendo carregado em um site HTTPS, 
+  // o navegador pode bloquear por segurança (Mixed Content).
   return trimmedUrl;
 }
 
 /**
- * Verifica se a URL provavelmente será bloqueada em um iframe (como Mercado Livre, Netflix, etc)
+ * Verifica se a URL provavelmente será bloqueada em um iframe por políticas de segurança restritas
  */
 export function isPotentiallyBlocked(url: string | undefined): boolean {
   if (!url) return false;
@@ -46,7 +47,8 @@ export function isPotentiallyBlocked(url: string | undefined): boolean {
     'primevideo.com',
     'disneyplus.com',
     'hbo.com',
-    'globo.com'
+    'globo.com',
+    'globoplay.globo.com'
   ];
   return blockedDomains.some(domain => url.toLowerCase().includes(domain));
 }

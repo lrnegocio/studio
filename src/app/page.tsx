@@ -26,8 +26,8 @@ export default function HomePage() {
 
   if (!isLoaded) return null;
 
-  // Group content by Category
-  const categories = Array.from(new Set(content.map(c => c.category)));
+  // Group content by Category (filtering out empty ones)
+  const categories = Array.from(new Set(content.map(c => c.category))).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,7 +74,7 @@ export default function HomePage() {
 
       {/* Dynamic Content Rows by Category */}
       <main className="container mx-auto py-12 px-4 md:px-8 space-y-12">
-        {categories.map(category => (
+        {categories.map((category) => (
           <ContentRow 
             key={category} 
             title={category} 

@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow to generate engaging descriptions for video content.
@@ -12,7 +13,7 @@ import { z } from 'genkit';
 
 const AdminContentDescriptionInputSchema = z.object({
   title: z.string().describe('The title of the video content.'),
-  genre: z.string().describe('The genre(s) of the video content.'),
+  genre: z.string().describe('The category of the video content.'),
 });
 export type AdminContentDescriptionInput = z.infer<typeof AdminContentDescriptionInputSchema>;
 
@@ -32,12 +33,12 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert content writer for a streaming service named "Léo Tv & Stream".
 
 Your task is to generate a concise, engaging, and SEO-friendly description for new video content.
-The description should capture the essence of the content, entice users to watch, and include relevant keywords based on the title and genre.
+The description should capture the essence of the content, entice users to watch, and include relevant keywords based on the title and category.
 
 Generate a description in Portuguese.
 
 Title: {{{title}}}
-Genre: {{{genre}}}`,
+Category: {{{genre}}}`,
 });
 
 const adminContentDescriptionGenerationFlow = ai.defineFlow(

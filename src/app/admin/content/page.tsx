@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Film, Plus, Trash2, Edit, Wand2, Loader2, Play, PlusCircle, Layers, MonitorPlay, Save, X, Search, Mic, AlertTriangle } from 'lucide-react';
+import { Film, Plus, Trash2, Edit, Wand2, Loader2, PlusCircle, Layers, MonitorPlay, Save, Search, Mic, AlertTriangle } from 'lucide-react';
 import { VideoContent, ContentType, Season, Episode } from '@/lib/types';
 import { generateContentDescription } from '@/ai/flows/admin-content-description-generation';
 import { useToast } from '@/hooks/use-toast';
@@ -37,7 +37,7 @@ export default function AdminContentPage() {
   });
 
   const startVoiceSearch = useCallback(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitRecognition;
     if (!SpeechRecognition) {
       toast({ variant: "destructive", title: "Erro", description: "Busca por voz não suportada." });
       return;
@@ -294,16 +294,6 @@ export default function AdminContentPage() {
                   <div className="space-y-3">
                     <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-1">URL da Capa (Poster)</Label>
                     <Input value={formData.posterUrl} onChange={e => setFormData({...formData, posterUrl: e.target.value})} className="h-14 bg-background border-white/5" />
-                    <div className="mt-8 w-full aspect-[2/3] max-w-[280px] mx-auto border-4 border-dashed border-white/5 rounded-3xl overflow-hidden bg-muted/10 flex items-center justify-center relative group shadow-2xl">
-                      {formData.posterUrl ? (
-                        <img src={formData.posterUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="Preview" />
-                      ) : (
-                        <Film className="w-16 h-16 text-muted-foreground opacity-10" />
-                      )}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="bg-primary text-black px-4 py-2 rounded-full font-black text-[10px]">PREVIEW DA CAPA</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -331,7 +321,6 @@ export default function AdminContentPage() {
                           </div>
                         </CardHeader>
                         <CardContent className="p-8 space-y-4">
-                          {season.episodes.length === 0 && <p className="text-center text-muted-foreground py-4 text-xs font-bold uppercase opacity-30">Nenhum episódio nesta temporada</p>}
                           {season.episodes.map((ep) => (
                             <div key={ep.id} className="flex gap-4 items-center bg-card p-4 rounded-2xl border border-white/5 group hover:border-primary/30 transition-all">
                               <span className="text-xs font-black text-primary w-10 text-center">#{ep.number}</span>
@@ -363,7 +352,6 @@ export default function AdminContentPage() {
               <CardContent className="p-0 flex flex-col h-full">
                 <div className="relative w-full aspect-video overflow-hidden">
                   <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="text-[10px] px-3 py-1 rounded-full bg-primary text-black font-black uppercase tracking-widest">{item.type}</span>
                   </div>

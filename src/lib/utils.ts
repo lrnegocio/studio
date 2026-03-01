@@ -7,6 +7,16 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Verifica se a URL é um arquivo de vídeo direto (.m3u8, .mp4, .ts, etc)
+ */
+export function isVideoFile(url: string | undefined): boolean {
+  if (!url) return false;
+  const videoExtensions = ['.m3u8', '.mp4', '.ts', '.mkv', '.avi', '.mov'];
+  const urlLower = url.toLowerCase().split('?')[0];
+  return videoExtensions.some(ext => urlLower.endsWith(ext)) || url.includes('m3u8') || url.includes('stream_type=live');
+}
+
+/**
  * Converte links comuns para o formato de incorporação ou processamento seguro.
  */
 export function formatVideoUrl(url: string | undefined): string {

@@ -5,7 +5,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useContentStore } from '@/hooks/use-content';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronRight, Play, FastForward, Rewind, Smartphone, Monitor, Tv, Loader2, RotateCcw, ExternalLink, AlertTriangle, Maximize, Minimize } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, ChevronRight, Play, FastForward, Rewind, Smartphone, Monitor, Tv, Loader2, RotateCcw, ExternalLink, AlertTriangle, Maximize, Minimize, Lock, KeyRound } from 'lucide-react';
 import { VideoContent } from '@/lib/types';
 import { formatVideoUrl, isPotentiallyBlocked, isVideoFile } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -14,13 +15,17 @@ export default function WatchPage() {
   const { id } = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const { content, isLoaded } = useContentStore();
+  const { content, settings, isLoaded } = useContentStore();
+  
   const [video, setVideo] = useState<VideoContent | null>(null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -31,6 +36,7 @@ export default function WatchPage() {
         router.push('/');
       } else {
         setVideo(found);
+        setIsUnlocked(!found.isLocked);
         if (found.type !== 'series') {
           setOriginalUrl(found.sourceUrl || "");
           setActiveUrl(formatVideoUrl(found.sourceUrl));
@@ -46,6 +52,26 @@ export default function WatchPage() {
       }
     }
   }, [id, content, isLoaded, router]);
+
+  const handleUnlock = () => {
+    if (passwordInput === settings.parentalPassword) {
+      setIsUnlocked(true);
+      toast({ title: "Acesso Liberado", description: "Senha correta." });
+    } else {
+      toast({ variant: "destructive", title: "Senha Incorreta", description: "Tente novamente." });
+    }
+  };
+
+  const navigateContent = (direction: 'next' | 'prev') => {
+    const currentIndex = content.findIndex(c => c.id === id);
+    let nextIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    
+    if (nextIndex >= 0 && nextIndex < content.length) {
+      router.push(`/watch/${content[nextIndex].id}`);
+    } else {
+      toast({ title: "Fim do Catálogo", description: "Não há mais canais nesta direção." });
+    }
+  };
 
   const handleEpisodeSelect = (url: string) => {
     setIsLoading(true);
@@ -73,18 +99,6 @@ export default function WatchPage() {
     document.addEventListener('fullscreenchange', handleFsChange);
     return () => document.removeEventListener('fullscreenchange', handleFsChange);
   }, []);
-
-  const handleSeek = (direction: 'forward' | 'backward') => {
-    if (videoRef.current) {
-      const skip = 30;
-      if (direction === 'forward') {
-        videoRef.current.currentTime += skip;
-      } else {
-        videoRef.current.currentTime -= skip;
-      }
-    }
-    toast({ title: direction === 'forward' ? "Avançar +30s" : "Retroceder -30s", duration: 1000 });
-  };
 
   const reloadSignal = () => {
     const current = activeUrl;
@@ -123,7 +137,28 @@ export default function WatchPage() {
           ref={playerContainerRef}
           className={`relative w-full ${isFullscreen ? 'h-screen' : 'aspect-video md:flex-1'} flex flex-col items-center justify-center bg-black overflow-hidden group/player`}
         >
-          {activeUrl ? (
+          {!isUnlocked ? (
+            <div className="flex flex-col items-center justify-center gap-6 p-8 bg-card border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(217,128,38,0.2)] animate-fade-in">
+              <Lock className="w-16 h-16 text-primary" />
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-black uppercase tracking-tighter">Conteúdo Protegido</h3>
+                <p className="text-muted-foreground text-sm uppercase tracking-widest font-black">Insira a senha de controle parental</p>
+              </div>
+              <div className="flex gap-2 w-full max-w-xs">
+                <Input 
+                  type="password" 
+                  value={passwordInput} 
+                  onChange={e => setPasswordInput(e.target.value)} 
+                  placeholder="Senha" 
+                  className="bg-background text-center font-black tracking-[0.5em]"
+                  onKeyDown={e => e.key === 'Enter' && handleUnlock()}
+                />
+                <Button onClick={handleUnlock} className="bg-primary hover:bg-primary/90">
+                  <KeyRound className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+          ) : activeUrl ? (
             <div className="w-full h-full flex flex-col relative">
               {isLoading && (
                 <div className="absolute inset-0 z-30 bg-black flex flex-col items-center justify-center gap-8">
@@ -168,7 +203,7 @@ export default function WatchPage() {
               
               <div className="bg-gradient-to-t from-black via-black/95 to-transparent p-6 flex flex-col items-center gap-6 border-t border-white/5 opacity-0 group-hover/player:opacity-100 transition-opacity duration-300">
                 <div className="flex items-center justify-center gap-12">
-                  <Button variant="ghost" size="icon" className="w-16 h-16 rounded-full bg-white/5 hover:bg-primary hover:text-black" onClick={() => handleSeek('backward')}>
+                  <Button variant="ghost" size="icon" className="w-16 h-16 rounded-full bg-white/5 hover:bg-primary hover:text-black" onClick={() => navigateContent('prev')}>
                     <Rewind className="w-10 h-10 fill-current" />
                   </Button>
                   
@@ -181,7 +216,7 @@ export default function WatchPage() {
                     </Button>
                   </div>
 
-                  <Button variant="ghost" size="icon" className="w-16 h-16 rounded-full bg-white/5 hover:bg-primary hover:text-black" onClick={() => handleSeek('forward')}>
+                  <Button variant="ghost" size="icon" className="w-16 h-16 rounded-full bg-white/5 hover:bg-primary hover:text-black" onClick={() => navigateContent('next')}>
                     <FastForward className="w-10 h-10 fill-current" />
                   </Button>
                 </div>
@@ -207,6 +242,7 @@ export default function WatchPage() {
               <span className="bg-primary/10 px-6 py-2 rounded-full border border-primary/30">{video.type}</span>
               <ChevronRight className="w-4 h-4 text-white/10" />
               <span className="bg-white/5 px-6 py-2 rounded-full text-white border border-white/10">{video.category}</span>
+              {video.isLocked && <span className="bg-accent/10 px-6 py-2 rounded-full text-accent border border-accent/30 flex items-center gap-2"><Lock className="w-3 h-3"/> BLOQUEADO</span>}
             </div>
             <h1 className="text-5xl md:text-8xl font-black font-headline tracking-tighter uppercase leading-tight">{video.title}</h1>
             <p className="text-muted-foreground text-xl leading-relaxed max-w-4xl font-medium opacity-80">{video.description}</p>

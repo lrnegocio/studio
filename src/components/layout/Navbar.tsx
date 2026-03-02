@@ -2,7 +2,7 @@
 "use client";
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Tv, LayoutDashboard, Film, Users, LogOut, Menu } from 'lucide-react';
+import { Tv, LayoutDashboard, Film, Users, LogOut, Menu, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 
@@ -44,6 +44,11 @@ export function Navbar() {
             <Link href="/admin/subscriptions">
               <Button variant={pathname === '/admin/subscriptions' ? 'secondary' : 'ghost'} className="gap-2">
                 <Users className="w-4 h-4" /> Planos
+              </Button>
+            </Link>
+            <Link href="/admin/settings">
+              <Button variant={pathname === '/admin/settings' ? 'secondary' : 'ghost'} className="gap-2">
+                <Settings className="w-4 h-4" /> Configurações
               </Button>
             </Link>
           </div>

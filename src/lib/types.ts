@@ -26,6 +26,11 @@ export interface VideoContent {
   sourceUrl?: string;
   seasons?: Season[];
   isFeatured?: boolean;
+  isLocked?: boolean;
+}
+
+export interface AppSettings {
+  parentalPassword?: string;
 }
 
 export type SubscriptionType = 'trial' | 'paid' | 'personalized' | 'lifetime';

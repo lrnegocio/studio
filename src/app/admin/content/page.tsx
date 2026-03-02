@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Film, Plus, Trash2, Edit, Wand2, Loader2, PlusCircle, Layers, MonitorPlay, Save, Search, Mic, AlertTriangle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Film, Plus, Trash2, Edit, Wand2, Loader2, PlusCircle, Layers, MonitorPlay, Save, Search, Mic, AlertTriangle, Lock } from 'lucide-react';
 import { VideoContent, ContentType, Season, Episode } from '@/lib/types';
 import { generateContentDescription } from '@/ai/flows/admin-content-description-generation';
 import { useToast } from '@/hooks/use-toast';
@@ -33,7 +34,8 @@ export default function AdminContentPage() {
     description: '',
     posterUrl: 'https://picsum.photos/seed/new/400/600',
     sourceUrl: '',
-    seasons: []
+    seasons: [],
+    isLocked: false
   });
 
   const startVoiceSearch = useCallback(() => {
@@ -70,7 +72,8 @@ export default function AdminContentPage() {
       description: '',
       posterUrl: 'https://picsum.photos/seed/new/400/600',
       sourceUrl: '',
-      seasons: []
+      seasons: [],
+      isLocked: false
     });
     setIsEditing(true);
   };
@@ -236,7 +239,7 @@ export default function AdminContentPage() {
                       <Select onValueChange={(v: ContentType) => setFormData({...formData, type: v})} value={formData.type}>
                         <SelectTrigger className="h-14 bg-background border-white/5"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="movie">Canais / Filmes</SelectItem>
+                          <SelectItem value="movie">Filme / Canal</SelectItem>
                           <SelectItem value="series">Séries (Episódios)</SelectItem>
                         </SelectContent>
                       </Select>
@@ -245,6 +248,13 @@ export default function AdminContentPage() {
                       <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-1">Categoria Personalizada</Label>
                       <Input value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} placeholder="Ex: Esportes, Filmes 4K..." className="h-14 bg-background border-white/5" />
                     </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 bg-muted/10 p-4 rounded-2xl border border-white/5">
+                    <Checkbox id="isLocked" checked={formData.isLocked} onCheckedChange={(v) => setFormData({...formData, isLocked: v === true})} />
+                    <Label htmlFor="isLocked" className="text-sm font-black flex items-center gap-2 cursor-pointer uppercase tracking-widest">
+                      <Lock className="w-4 h-4 text-primary" /> Conteúdo Bloqueado (Requer Senha)
+                    </Label>
                   </div>
                   
                   <div className="space-y-3">
@@ -323,10 +333,14 @@ export default function AdminContentPage() {
                         <CardContent className="p-8 space-y-4">
                           {season.episodes.map((ep) => (
                             <div key={ep.id} className="flex gap-4 items-center bg-card p-4 rounded-2xl border border-white/5 group hover:border-primary/30 transition-all">
-                              <span className="text-xs font-black text-primary w-10 text-center">#{ep.number}</span>
-                              <Input placeholder="Título (Ex: Ep 01)" value={ep.title} onChange={(e) => updateEpisode(season.id, ep.id, 'title', e.target.value)} className="h-12 bg-background border-none font-bold text-sm" />
-                              <Input placeholder="URL do Sinal (M3U8 / MP4)" value={ep.url} onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)} className="h-12 bg-background border-none font-mono text-[10px] flex-[2]" />
-                              <Button variant="ghost" size="icon" onClick={() => deleteEpisode(season.id, ep.id)} className="text-destructive hover:bg-destructive/10"><Trash2 className="w-5 h-5" /></Button>
+                              <div className="flex flex-col gap-2 w-full">
+                                <div className="flex gap-4 items-center">
+                                  <span className="text-xs font-black text-primary w-10 text-center">#{ep.number}</span>
+                                  <Input placeholder="Título (Ex: Ep 01)" value={ep.title} onChange={(e) => updateEpisode(season.id, ep.id, 'title', e.target.value)} className="h-12 bg-background border-none font-bold text-sm" />
+                                  <Button variant="ghost" size="icon" onClick={() => deleteEpisode(season.id, ep.id)} className="text-destructive hover:bg-destructive/10 shrink-0"><Trash2 className="w-5 h-5" /></Button>
+                                </div>
+                                <Input placeholder="URL do Sinal (M3U8 / MP4 / Youtube)" value={ep.url} onChange={(e) => updateEpisode(season.id, ep.id, 'url', e.target.value)} className="h-10 bg-muted/30 border-none font-mono text-[10px] w-full" />
+                              </div>
                             </div>
                           ))}
                         </CardContent>
@@ -354,6 +368,7 @@ export default function AdminContentPage() {
                   <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="text-[10px] px-3 py-1 rounded-full bg-primary text-black font-black uppercase tracking-widest">{item.type}</span>
+                    {item.isLocked && <span className="bg-accent p-1 px-2 rounded-full text-white text-[8px] flex items-center gap-1"><Lock className="w-3 h-3"/> PROTEGIDO</span>}
                   </div>
                 </div>
                 <div className="p-6 flex flex-col justify-between flex-1">

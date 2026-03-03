@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -18,7 +17,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <Card className="hover:shadow-xl transition-all border-none bg-white/10 backdrop-blur-md text-white group cursor-pointer overflow-hidden">
-            <Link href="/login?role=cliente" className="block h-full">
+            <Link href="/auth/login?role=cliente" className="block h-full">
               <CardHeader className="items-center">
                 <div className="p-4 rounded-full bg-accent group-hover:scale-110 transition-transform">
                   <User className="w-8 h-8" />
@@ -35,7 +34,7 @@ export default function Home() {
           </Card>
 
           <Card className="hover:shadow-xl transition-all border-none bg-white/10 backdrop-blur-md text-white group cursor-pointer overflow-hidden">
-            <Link href="/login?role=cambista" className="block h-full">
+            <Link href="/auth/login?role=cambista" className="block h-full">
               <CardHeader className="items-center">
                 <div className="p-4 rounded-full bg-primary-foreground/20 group-hover:scale-110 transition-transform">
                   <Store className="w-8 h-8" />
@@ -52,7 +51,7 @@ export default function Home() {
           </Card>
 
           <Card className="hover:shadow-xl transition-all border-none bg-white/10 backdrop-blur-md text-white group cursor-pointer overflow-hidden">
-            <Link href="/login?role=admin" className="block h-full">
+            <Link href="/auth/login?role=admin" className="block h-full">
               <CardHeader className="items-center">
                 <div className="p-4 rounded-full bg-white/20 group-hover:scale-110 transition-transform">
                   <ShieldCheck className="w-8 h-8" />

@@ -1,68 +1,6 @@
-
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
-}
-
-/**
- * Verifica se a URL é um arquivo de vídeo direto (.m3u8, .mp4, .ts, etc)
- */
-export function isVideoFile(url: string | undefined): boolean {
-  if (!url) return false;
-  const videoExtensions = ['.m3u8', '.mp4', '.ts', '.mkv', '.avi', '.mov'];
-  const urlLower = url.toLowerCase().split('?')[0];
-  return videoExtensions.some(ext => urlLower.endsWith(ext)) || url.includes('m3u8') || url.includes('stream_type=live');
-}
-
-/**
- * Converte links comuns para o formato de incorporação ou processamento seguro.
- */
-export function formatVideoUrl(url: string | undefined): string {
-  if (!url) return "";
-  
-  const trimmedUrl = url.trim();
-
-  // YouTube
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const ytMatch = trimmedUrl.match(youtubeRegex);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&controls=1`;
-  }
-
-  // Dailymotion
-  const dailyRegex = /(?:dailymotion\.com(?:\/video|\/hub)|dai\.ly)\/([a-zA-Z0-9]+)/;
-  const dailyMatch = trimmedUrl.match(dailyRegex);
-  if (dailyMatch && dailyMatch[1]) {
-    return `https://www.dailymotion.com/embed/video/${dailyMatch[1]}?autoplay=1`;
-  }
-
-  // VisionCine, DigitalPlus e similares
-  if (
-    trimmedUrl.includes('visioncine.stream') || 
-    trimmedUrl.includes('playcnvs.stream') || 
-    trimmedUrl.includes('digitalplus.top') ||
-    trimmedUrl.includes('web.digitalplus.top')
-  ) {
-    return trimmedUrl;
-  }
-  
-  return trimmedUrl;
-}
-
-/**
- * Verifica se a URL provavelmente será bloqueada em um iframe por políticas de segurança restritas
- */
-export function isPotentiallyBlocked(url: string | undefined): boolean {
-  if (!url) return false;
-  const blockedDomains = [
-    'mercadolivre.com.br',
-    'netflix.com',
-    'primevideo.com',
-    'disneyplus.com',
-    'hbo.com',
-    'globo.com'
-  ];
-  return blockedDomains.some(domain => url.toLowerCase().includes(domain));
 }

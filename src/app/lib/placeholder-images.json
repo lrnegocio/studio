@@ -2,40 +2,16 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-1",
-      "description": "Epic cinematic action movie banner",
-      "imageUrl": "https://picsum.photos/seed/leo1/1200/600",
-      "imageHint": "action movie"
+      "id": "soccer-hero",
+      "description": "Soccer stadium background",
+      "imageUrl": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200&h=600&auto=format&fit=crop",
+      "imageHint": "soccer stadium"
     },
     {
-      "id": "movie-1",
-      "description": "Adventure movie poster",
-      "imageUrl": "https://picsum.photos/seed/leo2/400/600",
-      "imageHint": "adventure movie"
-    },
-    {
-      "id": "movie-2",
-      "description": "Sci-fi movie poster",
-      "imageUrl": "https://picsum.photos/seed/leo3/400/600",
-      "imageHint": "sci-fi movie"
-    },
-    {
-      "id": "movie-3",
-      "description": "Drama movie poster",
-      "imageUrl": "https://picsum.photos/seed/leo4/400/600",
-      "imageHint": "drama movie"
-    },
-    {
-      "id": "series-1",
-      "description": "Mystery series poster",
-      "imageUrl": "https://picsum.photos/seed/leo5/400/600",
-      "imageHint": "mystery series"
-    },
-    {
-      "id": "series-2",
-      "description": "Comedy series poster",
-      "imageUrl": "https://picsum.photos/seed/leo6/400/600",
-      "imageHint": "comedy series"
+      "id": "bingo-hero",
+      "description": "Bingo balls and cards",
+      "imageUrl": "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&h=600&auto=format&fit=crop",
+      "imageHint": "bingo balls"
     }
   ]
 }

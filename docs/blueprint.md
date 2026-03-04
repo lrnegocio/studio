@@ -1,21 +1,21 @@
-# **App Name**: Léo Tv & Stream
+# **App Name**: Leobet Pro
 
 ## Core Features:
 
-- Secure Admin & User Authentication: User login screen with distinct paths for administrators and standard users, safeguarding access based on credentials.
-- Comprehensive Video Content Management: Admin panel to add, edit, and categorize movies, series, and individual episodes. Supports a wide array of streaming sources via URL, including YouTube embeds, M3U8, Plex TV, Pluto TV, Dailymotion, Tokyvideo, Cplay.live, Visioncine, Mercado Play, and various other direct or embeddable links.
-- Dynamic Subscription & Access Controls: Admin functionality to define and manage diverse subscription tiers including free trials (by hours or days), 30-day paid plans, customizable durations, and lifetime access, along with assigning these plans to users.
-- AI-Powered Content Description Tool: An intelligent tool for administrators that automatically generates engaging and concise descriptions for new video content, assisting with cataloging and user discoverability based on minimal input like title and genre.
-- Progressive Web App (PWA) Functionality: Implement core PWA capabilities allowing the application to be installable on user devices, provide an app-like experience, and ensure robust performance, potentially including offline content access for cached elements.
-- Intuitive User Content Interface: A sleek, responsive user-facing interface for browsing available video content and seamlessly playing streaming links based on the user's granted subscription status.
+- User Authentication: Secure login system with three roles: admin, bookmaker, and client. Admin manages bookmakers; bookmakers manage client interactions.
+- User Registration: Self-registration for clients, with required data: full name, RG, CPF/CNH, birth date, Pix key, and phone number. Bookmaker registration handled by admin.
+- Admin Dashboard: Comprehensive panel for managing bookmakers, approving deposits/withdrawals, setting up soccer pool and bingo events, and overall system configuration.
+- Bookmaker Panel: Tools for selling bets, consulting prizes, downloading winning tickets, viewing sales reports, and printing/sharing tickets.
+- Client Panel: Interface for making bets, checking bet history, viewing available balance, and requesting withdrawals.
+- Soccer Pool Management: Admin tool for setting up soccer pools: name, value, championship, teams. Includes rules block for displaying rules to users. System automatically calculates winners after admin enters match results.
+- Bingo Management: Admin tool for creating online bingo games: name, ticket price, number of tickets. Bingo ends one minute before schedule or when all tickets are sold. Features automated ball drawing with manual override, and real-time display of near-winning tickets.
 
 ## Style Guidelines:
 
-- Color scheme: Dark theme, providing a premium and immersive viewing experience suitable for streaming content. This choice evokes a modern and cinematic atmosphere.
-- Primary color: A rich, warm golden-orange (#D98026). This color is chosen for its energetic and sophisticated appeal, reminiscent of the sun or vibrant energy, and provides a strong contrast against darker backgrounds.
-- Background color: A deep, muted reddish-brown (#241F19), closely related in hue to the primary color but heavily desaturated to create a sophisticated and unobtrusive base that allows content and primary elements to stand out.
-- Accent color: A striking, analogous red-orange (#DB5757). This vibrant shade offers excellent contrast against the dark background and primary color, ideal for calls to action, highlights, and interactive elements, ensuring visual pop and user engagement.
-- Body and headline font: 'Inter' (sans-serif), chosen for its modern, clean, and highly readable characteristics, suitable for both large headlines and smaller body text in a content-heavy application.
-- Use minimalist and contemporary line icons. Prioritize clarity and intuitive recognition for all navigation, playback controls, and administrative actions to maintain a sophisticated aesthetic.
-- Employ a clean, modular grid system for content display. Focus on visual hierarchy with generous spacing to emphasize content, and ensure responsiveness across all device sizes for an optimal viewing experience.
-- Incorporate subtle and smooth transitions for navigation, content loading, and user interactions. Animations should enhance the user experience without being distracting, adding a polished and modern feel.
+- Primary color: Deep blue (#1E3A8A), conveying trust and stability.
+- Background color: Light gray (#F5F5F5), providing a clean and neutral backdrop.
+- Accent color: Vibrant orange (#EA580C), used for calls to action and important highlights.
+- Body font: 'PT Sans', sans-serif, combining a modern look with some warmth and personality; to be used for text and headlines
+- Code font: 'Source Code Pro' for displaying code snippets (e.g., ticket numbers).
+- Consistent use of simple, modern icons for navigation and representing different features.
+- Subtle transitions and loading animations to enhance user experience and provide feedback on actions.
